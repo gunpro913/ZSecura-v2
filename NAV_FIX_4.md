@@ -1,0 +1,1 @@
+The nav fix is contained in styles.css.

@@ -1,0 +1,1 @@
+Sticky navigation containment fix: the page shell no longer uses overflow:hidden, which can establish a containing block for position:fixed descendants. Horizontal clipping is handled with overflow-x:clip so the nav remains viewport-fixed on mobile and desktop.

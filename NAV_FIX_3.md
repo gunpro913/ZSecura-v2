@@ -1,0 +1,1 @@
+Sticky nav fix complete: .site-shell overflow clipping no longer captures the fixed nav.
