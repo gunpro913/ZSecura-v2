@@ -1,3 +1,5 @@
+const navWrap = document.querySelector('.nav-wrap');
+const nav = document.querySelector('.nav');
 const menuButton = document.querySelector('.menu-toggle');
 const navLinks = document.querySelector('.nav-links');
 const video = document.querySelector('.hero-video');
@@ -6,7 +8,21 @@ const hero = document.querySelector('.hero');
 const mountains = document.querySelector('.fallback-mountains');
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+/* Keep the fixed navigation outside the page shell so no ancestor overflow or
+   stacking context can clip/paint over it on mobile or desktop. */
+if (navWrap && navWrap.parentElement !== document.body) {
+  document.body.prepend(navWrap);
+}
+
 document.documentElement.classList.add('js-ready');
+
+const closeMenu = () => {
+  if (!menuButton || !navLinks) return;
+  menuButton.setAttribute('aria-expanded', 'false');
+  menuButton.setAttribute('aria-label', 'Open menu');
+  navLinks.classList.remove('mobile-open');
+  document.body.classList.remove('nav-open');
+};
 
 if (menuButton && navLinks) {
   menuButton.addEventListener('click', () => {
@@ -14,16 +30,30 @@ if (menuButton && navLinks) {
     menuButton.setAttribute('aria-expanded', String(!open));
     menuButton.setAttribute('aria-label', open ? 'Open menu' : 'Close menu');
     navLinks.classList.toggle('mobile-open', !open);
+    document.body.classList.toggle('nav-open', !open);
   });
 
   document.querySelectorAll('.nav-links a').forEach((link) => {
-    link.addEventListener('click', () => {
-      menuButton.setAttribute('aria-expanded', 'false');
-      menuButton.setAttribute('aria-label', 'Open menu');
-      navLinks.classList.remove('mobile-open');
-    });
+    link.addEventListener('click', closeMenu);
+  });
+
+  document.addEventListener('pointerdown', (event) => {
+    if (!nav?.contains(event.target)) closeMenu();
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeMenu();
   });
 }
+
+let lastScrollY = window.scrollY;
+const updateNav = () => {
+  if (!nav) return;
+  nav.classList.toggle('is-scrolled', window.scrollY > 18);
+  lastScrollY = window.scrollY;
+};
+window.addEventListener('scroll', updateNav, { passive: true });
+updateNav();
 
 const setVideoState = () => {
   if (!video || !playButton) return;
