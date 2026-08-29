@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="ZSecura — Security for what's next." />
+  <meta name="theme-color" content="#050609" />
   <title>ZSecura — Security for What's Next</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,98 +12,82 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <main class="site-shell">
-    <section class="hero" aria-label="ZSecura introduction">
+  <main class="site-shell" id="top">
+    <section class="hero" id="home" aria-label="ZSecura introduction">
       <div class="hero-video-wrap" aria-hidden="true">
-        <!-- Upload your final background video as assets/hero.mp4 later. -->
         <video class="hero-video" autoplay muted loop playsinline preload="metadata">
           <source src="assets/hero.mp4" type="video/mp4" />
         </video>
         <div class="fallback-mountains">
-          <span class="peak peak-left"></span>
-          <span class="peak peak-center"></span>
-          <span class="peak peak-right"></span>
+          <span class="peak peak-left"></span><span class="peak peak-center"></span><span class="peak peak-right"></span>
         </div>
-        <div class="atmosphere"></div>
-        <div class="grain"></div>
-        <div class="vignette"></div>
+        <div class="atmosphere"></div><div class="grain"></div><div class="vignette"></div>
       </div>
 
       <header class="nav-wrap">
         <nav class="nav glass" aria-label="Primary navigation">
           <a class="brand" href="#top" aria-label="ZSecura home">
-            <span class="brand-mark" aria-hidden="true">
-              <svg viewBox="0 0 48 48" fill="none">
-                <path d="M24 4 42 10v12c0 11.2-7.3 19.1-18 22C13.3 41.1 6 33.2 6 22V10L24 4Z" stroke="currentColor" stroke-width="2.4"/>
-                <path d="m13 17 11-6 11 6-11 6-11-6Z" stroke="currentColor" stroke-width="2"/>
-                <path d="M18 21v6c2.1 1.6 4 2.4 6 2.4s3.9-.8 6-2.4v-6" stroke="currentColor" stroke-width="2"/>
-              </svg>
-            </span>
+            <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none"><path d="M24 4 42 10v12c0 11.2-7.3 19.1-18 22C13.3 41.1 6 33.2 6 22V10L24 4Z" stroke="currentColor" stroke-width="2.4"/><path d="m13 17 11-6 11 6-11 6-11-6Z" stroke="currentColor" stroke-width="2"/><path d="M18 21v6c2.1 1.6 4 2.4 6 2.4s3.9-.8 6-2.4v-6" stroke="currentColor" stroke-width="2"/></svg></span>
             <span class="brand-name">ZSECURA</span>
           </a>
-
-          <div class="nav-links">
-            <a href="#home">Home</a>
-            <a href="#about">About Us</a>
-            <a href="#services">Services</a>
-            <a href="#industries">Industries</a>
+          <div class="nav-links" id="primary-links">
+            <a class="active" href="#home">Home</a><a href="#about">About Us</a><a href="#services">Services</a><a href="#industries">Industries</a>
           </div>
-
           <a class="nav-cta" href="#contact">Contact Us <span>↗</span></a>
-          <button class="menu-toggle" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
+          <button class="menu-toggle" aria-label="Open menu" aria-controls="primary-links" aria-expanded="false"><span></span><span></span></button>
         </nav>
       </header>
 
-      <div class="hero-content" id="home">
+      <div class="hero-content reveal">
         <div class="eyebrow glass-pill"><span class="status-dot"></span> ADVANCED CYBERSECURITY</div>
         <h1>SECURITY FOR WHAT'S <span>NEXT</span></h1>
         <p class="hero-copy">Protecting the systems, people and ideas that move the world forward.</p>
-        <div class="hero-actions">
-          <a class="button button-primary" href="#services">Explore Services <span>↗</span></a>
-          <a class="button button-glass" href="#contact">Talk to ZSecura <span>→</span></a>
-        </div>
+        <div class="hero-actions"><a class="button button-primary" href="#services">Explore Services <span>↗</span></a><a class="button button-glass" href="#contact">Talk to ZSecura <span>→</span></a></div>
       </div>
 
-      <button class="play-orb glass" type="button" aria-label="Play hero video" id="playVideo">
-        <span class="play-icon"></span>
-      </button>
-
-      <div class="hero-meta">
-        <div><span class="mono">01</span><span>SECURE BY DESIGN</span></div>
-        <div><span class="mono">24/7</span><span>GLOBAL PROTECTION</span></div>
-      </div>
-
+      <button class="play-orb glass" type="button" aria-label="Pause hero video" id="playVideo"><span class="play-icon"></span></button>
+      <div class="hero-meta"><div><span class="mono">01</span><span>SECURE BY DESIGN</span></div><div><span class="mono">24/7</span><span>GLOBAL PROTECTION</span></div></div>
       <div class="scroll-cue"><span>SCROLL TO EXPLORE</span><i></i></div>
     </section>
 
     <section class="next-section" id="about">
-      <div class="section-inner">
+      <div class="section-inner reveal">
         <p class="section-label">01 / THE MISSION</p>
         <h2>Built for a world<br><em>that never stops.</em></h2>
-        <p class="section-copy">ZSecura combines strategic thinking, modern technology and relentless security engineering to keep organisations ready for what comes next.</p>
-      </div>
-    </section>
-
-    <section class="dark-section" id="services">
-      <div class="section-inner">
-        <p class="section-label">02 / CAPABILITIES</p>
-        <div class="service-grid">
-          <article class="service-card glass-card"><span>01</span><h3>Cyber Strategy</h3><p>Security architecture, risk intelligence and resilient digital strategy.</p></article>
-          <article class="service-card glass-card"><span>02</span><h3>Threat Defense</h3><p>Proactive detection and response designed around real-world threats.</p></article>
-          <article class="service-card glass-card"><span>03</span><h3>Security Engineering</h3><p>Secure infrastructure and systems engineered for the next generation.</p></article>
+        <div class="mission-layout">
+          <p class="section-copy">ZSecura combines strategic thinking, modern technology and relentless security engineering to keep organisations ready for what comes next.</p>
+          <div class="signal-list" aria-label="ZSecura principles"><div><span>01</span><strong>Anticipate</strong><small>See risk before it becomes disruption.</small></div><div><span>02</span><strong>Engineer</strong><small>Build security into the systems that matter.</small></div><div><span>03</span><strong>Respond</strong><small>Stay decisive when the environment changes.</small></div></div>
         </div>
       </div>
     </section>
 
+    <section class="dark-section" id="services">
+      <div class="section-inner reveal">
+        <div class="section-heading"><div><p class="section-label">02 / CAPABILITIES</p><h2>Security that moves<br><em>with you.</em></h2></div><p class="heading-note">From strategy to engineering, every capability is designed to reduce uncertainty and increase resilience.</p></div>
+        <div class="service-grid">
+          <article class="service-card glass-card"><span>01</span><h3>Cyber Strategy</h3><p>Security architecture, risk intelligence and resilient digital strategy.</p><a href="#contact" aria-label="Discuss Cyber Strategy">Learn more <span>↗</span></a></article>
+          <article class="service-card glass-card"><span>02</span><h3>Threat Defense</h3><p>Proactive detection and response designed around real-world threats.</p><a href="#contact" aria-label="Discuss Threat Defense">Learn more <span>↗</span></a></article>
+          <article class="service-card glass-card"><span>03</span><h3>Security Engineering</h3><p>Secure infrastructure and systems engineered for the next generation.</p><a href="#contact" aria-label="Discuss Security Engineering">Learn more <span>↗</span></a></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="industries-section" id="industries">
+      <div class="section-inner reveal">
+        <p class="section-label">03 / INDUSTRIES</p>
+        <div class="industry-heading"><h2>Protection where<br><em>stakes are high.</em></h2><p>Security programs shaped around the operational realities of modern organisations.</p></div>
+        <div class="industry-grid"><div><span>01</span><strong>Technology</strong><small>Cloud, software & digital platforms</small></div><div><span>02</span><strong>Finance</strong><small>Data, identity & critical transactions</small></div><div><span>03</span><strong>Infrastructure</strong><small>Connected systems & operational resilience</small></div><div><span>04</span><strong>Enterprise</strong><small>People, endpoints & business continuity</small></div></div>
+      </div>
+    </section>
+
     <section class="contact-section" id="contact">
-      <div class="section-inner contact-inner">
-        <p class="section-label">03 / START A CONVERSATION</p>
-        <h2>Ready for what's<br><em>next?</em></h2>
+      <div class="section-inner contact-inner reveal">
+        <p class="section-label">04 / START A CONVERSATION</p><h2>Ready for what's<br><em>next?</em></h2><p class="contact-copy">Tell us where you are today. We'll help map the security path forward.</p>
         <a class="button button-primary" href="mailto:hello@zsecura.com">Contact ZSecura <span>↗</span></a>
       </div>
     </section>
+    <footer><span>© 2026 ZSECURA</span><span>SECURITY FOR WHAT'S NEXT</span></footer>
   </main>
-
   <script src="script.js"></script>
 </body>
 </html>
