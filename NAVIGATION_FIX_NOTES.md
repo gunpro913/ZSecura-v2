@@ -1,0 +1,1 @@
+Sticky navigation is fixed via styles.css.
