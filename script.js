@@ -1,5 +1,6 @@
 const menuButton = document.querySelector('.menu-toggle');
 const navLinks = document.querySelector('.nav-links');
+const nav = document.querySelector('.nav');
 const video = document.querySelector('.hero-video');
 const playButton = document.querySelector('#playVideo');
 const hero = document.querySelector('.hero');
@@ -7,6 +8,13 @@ const mountains = document.querySelector('.fallback-mountains');
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 document.documentElement.classList.add('js-ready');
+
+const closeMenu = () => {
+  if (!menuButton || !navLinks) return;
+  menuButton.setAttribute('aria-expanded', 'false');
+  menuButton.setAttribute('aria-label', 'Open menu');
+  navLinks.classList.remove('mobile-open');
+};
 
 if (menuButton && navLinks) {
   menuButton.addEventListener('click', () => {
@@ -17,13 +25,25 @@ if (menuButton && navLinks) {
   });
 
   document.querySelectorAll('.nav-links a').forEach((link) => {
-    link.addEventListener('click', () => {
-      menuButton.setAttribute('aria-expanded', 'false');
-      menuButton.setAttribute('aria-label', 'Open menu');
-      navLinks.classList.remove('mobile-open');
-    });
+    link.addEventListener('click', closeMenu);
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!navLinks.classList.contains('mobile-open')) return;
+    if (nav?.contains(event.target)) return;
+    closeMenu();
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeMenu();
   });
 }
+
+const updateNavDepth = () => {
+  nav?.classList.toggle('is-scrolled', window.scrollY > 24);
+};
+updateNavDepth();
+window.addEventListener('scroll', updateNavDepth, { passive: true });
 
 const setVideoState = () => {
   if (!video || !playButton) return;
