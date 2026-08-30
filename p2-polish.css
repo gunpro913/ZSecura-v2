@@ -1,3 +1,5 @@
+@import url('change-01-nav.css');
+
 /* ZSecura P2 polish layer: restrained glass, interaction, accessibility, and performance safeguards. */
 :root {
   --p2-glass-bg: rgba(15, 9, 26, 0.72);
