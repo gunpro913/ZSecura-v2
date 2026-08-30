@@ -2,10 +2,7 @@ const navWrap = document.querySelector('.nav-wrap');
 const nav = document.querySelector('.nav');
 const menuButton = document.querySelector('.menu-toggle');
 const navLinks = document.querySelector('.nav-links');
-const video = document.querySelector('.hero-video');
-const playButton = document.querySelector('#playVideo');
 const hero = document.querySelector('.hero');
-const mountains = document.querySelector('.fallback-mountains');
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
 
@@ -39,7 +36,6 @@ const initCursor = () => {
   };
   animateOutline();
 
-  // Expand on clickable elements
   const clickables = document.querySelectorAll('a, button, input, textarea, select, .service-card, .team-card, .blog-card');
   clickables.forEach(el => {
     el.addEventListener('mouseenter', () => outline.classList.add('hovering'));
@@ -83,7 +79,7 @@ if (menuButton && navLinks) {
     link.addEventListener('click', closeMenu);
   });
   document.addEventListener('pointerdown', (event) => {
-    if (!nav?.contains(event.target)) closeMenu();
+    if (!nav?.contains(event.target) && navLinks.classList.contains('mobile-open')) closeMenu();
   });
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') closeMenu();
@@ -99,40 +95,6 @@ const updateNav = () => {
 };
 window.addEventListener('scroll', updateNav, { passive: true });
 updateNav();
-
-/* ===== VIDEO CONTROLS ===== */
-const setVideoState = () => {
-  if (!video || !playButton) return;
-  const paused = video.paused;
-  playButton.setAttribute('aria-label', paused ? 'Play hero video' : 'Pause hero video');
-  playButton.querySelector('.play-icon')?.classList.toggle('is-paused', !paused);
-};
-
-if (playButton && video) {
-  video.addEventListener('play', setVideoState);
-  video.addEventListener('pause', setVideoState);
-  playButton.addEventListener('click', async () => {
-    if (video.paused) {
-      try { await video.play(); } catch (_) {}
-    } else {
-      video.pause();
-    }
-    setVideoState();
-  });
-  setVideoState();
-}
-
-/* ===== MOUNTAINS PARALLAX ===== */
-if (hero && mountains && !reduceMotion) {
-  hero.addEventListener('pointermove', (event) => {
-    const x = (event.clientX / window.innerWidth - 0.5) * 2;
-    const y = (event.clientY / window.innerHeight - 0.5) * 2;
-    mountains.style.transform = `translate3d(${x * -8}px, ${y * -4}px, 0) scale(1.03)`;
-  });
-  hero.addEventListener('pointerleave', () => {
-    mountains.style.transform = 'translate3d(0,0,0) scale(1)';
-  });
-}
 
 /* ===== REVEAL OBSERVER ===== */
 if (!reduceMotion) {
@@ -190,7 +152,7 @@ const initParticleNetwork = () => {
       this.vx = (Math.random() - 0.5) * 0.5;
       this.vy = (Math.random() - 0.5) * 0.5;
       this.size = Math.random() * 2 + 1;
-      this.baseColor = Math.random() > 0.7 ? '255, 29, 37' : '175, 191, 211';
+      this.baseColor = Math.random() > 0.7 ? '232, 72, 92' : '160, 144, 160';
     }
 
     update() {
@@ -228,11 +190,11 @@ const initParticleNetwork = () => {
         const dy = particles[i].y - particles[j].y;
         const dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < CONNECTION_DISTANCE) {
-          const opacity = (1 - dist / CONNECTION_DISTANCE) * 0.25;
+          const opacity = (1 - dist / CONNECTION_DISTANCE) * 0.2;
           ctx.beginPath();
           ctx.moveTo(particles[i].x, particles[i].y);
           ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.strokeStyle = `rgba(175, 191, 211, ${opacity})`;
+          ctx.strokeStyle = `rgba(160, 144, 160, ${opacity})`;
           ctx.lineWidth = 0.5;
           ctx.stroke();
         }
@@ -242,11 +204,11 @@ const initParticleNetwork = () => {
         const dy = particles[i].y - mouse.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < MOUSE_DISTANCE) {
-          const opacity = (1 - dist / MOUSE_DISTANCE) * 0.4;
+          const opacity = (1 - dist / MOUSE_DISTANCE) * 0.35;
           ctx.beginPath();
           ctx.moveTo(particles[i].x, particles[i].y);
           ctx.lineTo(mouse.x, mouse.y);
-          ctx.strokeStyle = `rgba(255, 29, 37, ${opacity})`;
+          ctx.strokeStyle = `rgba(232, 72, 92, ${opacity})`;
           ctx.lineWidth = 0.8;
           ctx.stroke();
         }
@@ -255,7 +217,10 @@ const initParticleNetwork = () => {
   };
 
   const animate = () => {
-    if (isPaused) return;
+    if (isPaused) {
+      animationId = requestAnimationFrame(animate);
+      return;
+    }
     ctx.clearRect(0, 0, width, height);
     particles.forEach(p => { p.update(); p.draw(); });
     drawConnections();
@@ -276,24 +241,18 @@ const initParticleNetwork = () => {
   });
   hero.addEventListener('mouseleave', () => { mouse.x = null; mouse.y = null; });
 
-  if (playButton) {
-    playButton.addEventListener('click', () => {
-      isPaused = !isPaused;
-      if (!isPaused) animate();
-    });
-  }
-
   window.addEventListener('resize', resize);
   init();
 };
 
-/* ===== KINETIC TYPOGRAPHY (Scroll-Driven) ===== */
+/* ===== KINETIC TYPOGRAPHY ===== */
 const initKineticText = () => {
   if (reduceMotion) return;
 
   const kineticElements = document.querySelectorAll('.kinetic-text');
   if (!kineticElements.length) return;
 
+  let ticking = false;
   const updateKinetic = () => {
     kineticElements.forEach(el => {
       const rect = el.getBoundingClientRect();
@@ -302,18 +261,23 @@ const initKineticText = () => {
       const distanceFromCenter = (elementCenter - viewportHeight / 2) / viewportHeight;
       const intensity = Math.max(-1, Math.min(1, distanceFromCenter));
 
-      // Compress when scrolling past, expand when approaching
-      const weight = 700 - (intensity * 200);
-      const letterSpacing = -0.055 + (intensity * 0.03);
-      const scaleY = 1 - (Math.abs(intensity) * 0.05);
+      const weight = 400 - (intensity * 100);
+      const letterSpacing = -0.02 + (intensity * 0.015);
+      const scaleY = 1 - (Math.abs(intensity) * 0.03);
 
-      el.style.fontVariationSettings = `'wght' ${Math.max(400, Math.min(900, weight))}`;
+      el.style.fontVariationSettings = `'wght' ${Math.max(300, Math.min(500, weight))}`;
       el.style.letterSpacing = `${letterSpacing}em`;
       el.style.transform = `scaleY(${scaleY})`;
     });
+    ticking = false;
   };
 
-  window.addEventListener('scroll', updateKinetic, { passive: true });
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(updateKinetic);
+      ticking = true;
+    }
+  }, { passive: true });
   updateKinetic();
 };
 
@@ -321,23 +285,11 @@ const initKineticText = () => {
 const initTextReveals = () => {
   const heroHeading = document.querySelector('.typewriter-hero');
   if (heroHeading && window.innerWidth > 800 && !reduceMotion) {
-    const text = heroHeading.getAttribute('data-text');
-    if (text) {
-      heroHeading.textContent = '';
-      heroHeading.style.width = '0';
-      let i = 0;
-      const typeChar = () => {
-        if (i < text.length) {
-          heroHeading.textContent += text.charAt(i);
-          i++;
-          setTimeout(typeChar, 45);
-        } else {
-          heroHeading.innerHTML = text.replace('BUSINESS', '<span class="typewriter-accent">BUSINESS</span>');
-          heroHeading.classList.add('typing-done');
-        }
-      };
-      setTimeout(typeChar, 400);
-    }
+    heroHeading.style.width = '0';
+    const typeChar = () => {
+      heroHeading.classList.add('typing-done');
+    };
+    setTimeout(typeChar, 1800);
   } else if (heroHeading) {
     heroHeading.classList.add('typing-done');
   }
@@ -400,8 +352,8 @@ const initForms = () => {
       required.forEach(field => {
         if (!field.value.trim()) {
           valid = false;
-          field.style.borderColor = 'var(--red)';
-          field.style.boxShadow = '0 0 0 3px rgba(255,29,37,.1)';
+          field.style.borderColor = 'var(--accent)';
+          field.style.boxShadow = '0 0 0 3px rgba(232, 72, 92, 0.1)';
         } else {
           field.style.borderColor = '';
           field.style.boxShadow = '';
@@ -419,6 +371,14 @@ const initForms = () => {
   });
 };
 
+/* ===== AUTO-UPDATE COPYRIGHT YEAR ===== */
+const initYear = () => {
+  const yearEl = document.getElementById('year');
+  if (yearEl) {
+    yearEl.textContent = new Date().getFullYear();
+  }
+};
+
 /* ===== INITIALIZE ALL ===== */
 const initAll = () => {
   initCursor();
@@ -428,6 +388,7 @@ const initAll = () => {
   initTextReveals();
   initTiltCards();
   initForms();
+  initYear();
 };
 
 if (document.readyState === 'loading') {
