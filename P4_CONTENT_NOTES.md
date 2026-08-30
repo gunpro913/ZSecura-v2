@@ -1,0 +1,1 @@
+P4 implementation note: P4 restores only the official positioning, Vision, and four primary capabilities. Existing unsupported claims must not be retained when encountered in corrected sections. P5 service labels are intentionally not expanded here.
