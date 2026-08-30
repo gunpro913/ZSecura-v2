@@ -4,12 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="ZSecura Industries — Banking, Healthcare, Government, Telecom. Cybersecurity consulting for Sri Lanka's critical sectors." />
-  <meta name="theme-color" content="#050609" />
+  <meta name="theme-color" content="#0a0612" />
   <title>Industries — ZSecura</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
+<base target="_blank">
 </head>
 <body>
   <div class="preloader">
@@ -26,12 +27,12 @@
       </a>
       <div class="nav-links" id="primary-links">
         <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="services.html">Services</a>
+        <a href="About.html">About</a>
+        <a href="services/">Services</a>
         <a class="active" href="industries.html">Industries</a>
         <a href="team.html">Team</a>
         <a href="blog.html">Blog</a>
-        <a href="careers.html">Careers</a>
+        <a href="career.html">Careers</a>
         <a href="contact.html">Contact</a>
       </div>
       <a class="nav-cta" href="contact.html">Get in Touch <span>↗</span></a>
@@ -42,22 +43,24 @@
   <main class="site-shell">
     <section class="page-section">
       <div class="section-inner reveal">
-        <p class="section-label">INDUSTRIES WE SERVE</p>
-        <h2 class="slide-up-reveal">Where security<br><em>is not optional.</em></h2>
-        <p class="section-copy reveal-text" style="margin-bottom: 60px;">We specialise in industries where a single security incident can damage reputation, disrupt operations, or violate regulatory obligations. We understand the specific pressures you face — because we have worked inside them.</p>
+        <div class="section-header">
+          <p class="section-label">Industries We Serve</p>
+          <h2 class="slide-up-reveal">Where security <em>is not optional.</em></h2>
+        </div>
+        <p class="section-copy reveal-text" style="margin-bottom: var(--space-8);">We specialise in industries where a single security incident can damage reputation, disrupt operations, or violate regulatory obligations. We understand the specific pressures you face — because we have worked inside them.</p>
 
-        <div class="industry-grid" style="margin-bottom: 40px;">
+        <div class="industry-grid" style="margin-bottom: var(--space-5);">
           <div><span>01</span><strong>Banking & Finance</strong><small>Payment security, regulatory compliance (CBSL, PCI DSS), fraud prevention, digital banking security</small></div>
           <div><span>02</span><strong>Healthcare</strong><small>Patient data protection, EMR security, HIPAA alignment, medical device security</small></div>
           <div><span>03</span><strong>Government</strong><small>Critical infrastructure protection, data sovereignty, national compliance frameworks, secure communications</small></div>
           <div><span>04</span><strong>Telecom & Technology</strong><small>Network security, customer data protection, SLA security requirements, cloud security</small></div>
         </div>
 
-        <div style="margin-top: 80px; text-align: center;">
-          <p class="section-label">NOT SURE IF WE FIT?</p>
-          <h2 class="slide-up-reveal" style="font-size: clamp(36px, 5vw, 64px);">We probably do.<br><em>Let's talk.</em></h2>
-          <p class="section-copy reveal-text" style="margin: 30px auto 0; max-width: 600px;">Even if your industry is not listed here, we likely have relevant experience. Our team has worked across manufacturing, education, hospitality, and more. Reach out — worst case, we point you to someone better suited.</p>
-          <div style="margin-top: 30px;">
+        <div style="margin-top: var(--space-10); text-align: left;">
+          <p class="section-label">Not Sure If We Fit?</p>
+          <h2 class="slide-up-reveal" style="font-size: clamp(32px, 4.5vw, 64px);">We probably do. <em>Let's talk.</em></h2>
+          <p class="section-copy reveal-text" style="margin: var(--space-3) 0 0; max-width: 600px;">Even if your industry is not listed here, we likely have relevant experience. Our team has worked across manufacturing, education, hospitality, and more. Reach out — worst case, we point you to someone better suited.</p>
+          <div style="margin-top: var(--space-5);">
             <a class="button button-primary" href="contact.html">Contact Us <span>↗</span></a>
           </div>
         </div>
@@ -65,7 +68,7 @@
     </section>
   </main>
 
-  <footer><span>© 2026 ZSECURA</span><span>INFORMATION SECURITY CONSULTANT · SRI LANKA</span></footer>
+  <footer><span>© <span id="year">2026</span> ZSECURA</span><span>Information Security Consultant · Sri Lanka</span></footer>
   <script src="script.js"></script>
 </body>
 </html>
