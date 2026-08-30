@@ -4,12 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="ZSecura — Professional cybersecurity consulting and compliance services in Sri Lanka. Reduce risk, protect assets, stay compliant." />
-  <meta name="theme-color" content="#000000" />
+  <meta name="theme-color" content="#0a0612" />
   <title>ZSecura — Information Security Consultant</title>
+
+  <!-- Fonts: Tiempos Text + Galaxie Copernicus -->
+  <!-- Self-hosted fallback: use Google Fonts alternatives if custom fonts not available -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="styles.css" />
+<base target="_blank">
 </head>
 <body>
   <!-- Preloader -->
@@ -28,12 +33,12 @@
       </a>
       <div class="nav-links" id="primary-links">
         <a class="active" href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="services.html">Services</a>
+        <a href="About.html">About</a>
+        <a href="services/">Services</a>
         <a href="industries.html">Industries</a>
         <a href="team.html">Team</a>
         <a href="blog.html">Blog</a>
-        <a href="careers.html">Careers</a>
+        <a href="career.html">Careers</a>
         <a href="contact.html">Contact</a>
       </div>
       <a class="nav-cta" href="contact.html">Get in Touch <span>↗</span></a>
@@ -42,45 +47,48 @@
   </header>
 
   <main class="site-shell" id="top">
-    <!-- Hero -->
+    <!-- Hero with Video Background -->
     <section class="hero" id="home" aria-label="ZSecura introduction">
       <div class="hero-video-wrap" aria-hidden="true">
-        <div class="liquid-bg"></div>
-        <div class="liquid-noise"></div>
+        <video class="hero-video" autoplay muted loop playsinline poster="assets/hero-poster.jpg">
+          <source src="assets/hero-bg.mp4" type="video/mp4" />
+        </video>
+        <div class="hero-video-overlay"></div>
         <canvas id="particle-canvas" class="particle-canvas"></canvas>
-        <div class="fallback-mountains">
-          <span class="peak peak-left"></span><span class="peak peak-center"></span><span class="peak peak-right"></span>
-        </div>
-        <div class="atmosphere"></div><div class="grain"></div><div class="vignette"></div>
+        <div class="atmosphere"></div>
+        <div class="grain"></div>
+        <div class="vignette"></div>
         <div class="scanlines"></div>
       </div>
+
       <div class="hero-content reveal">
         <div class="eyebrow glass-pill"><span class="status-dot"></span> INFORMATION SECURITY CONSULTANT</div>
-        <h1 class="typewriter-hero kinetic-text" data-text="CYBERSECURITY THAT WORKS FOR YOUR BUSINESS">CYBERSECURITY THAT WORKS FOR YOUR <span class="typewriter-accent">BUSINESS</span></h1>
+        <h1 class="typewriter-hero kinetic-text">Cybersecurity that works for your <em>business</em></h1>
         <p class="hero-copy">Professional consulting and compliance services that reduce risk, protect your digital assets, and prioritise cost-effectiveness — without the enterprise price tag.</p>
         <div class="hero-actions">
-          <a class="button button-primary" href="services.html">Our Services <span>↗</span></a>
+          <a class="button button-primary" href="services/">Our Services <span>↗</span></a>
           <a class="button button-glass" href="contact.html">Get in Touch <span>→</span></a>
         </div>
       </div>
-      <button class="play-orb glass" type="button" aria-label="Toggle particle animation" id="playVideo"><span class="play-icon"></span></button>
+
       <div class="hero-meta">
         <div><span class="mono">ISO</span><span>27001 CERTIFIED</span></div>
         <div><span class="mono">+94</span><span>SRILANKA BASED</span></div>
       </div>
-      <div class="scroll-cue"><span>SCROLL TO EXPLORE</span><i></i></div>
+
+      <div class="scroll-cue"><span>Scroll to explore</span><i></i></div>
     </section>
 
     <!-- Trusted By -->
     <section class="trusted-strip">
       <div class="trusted-inner">
-        <p class="trusted-label">TRUSTED BY ORGANISATIONS ACROSS SRI LANKA</p>
+        <p class="trusted-label">Trusted by organisations across Sri Lanka</p>
         <div class="logo-row">
-          <span class="logo-placeholder">BANK</span>
-          <span class="logo-placeholder">HEALTHCARE</span>
-          <span class="logo-placeholder">TELECOM</span>
-          <span class="logo-placeholder">GOVERNMENT</span>
-          <span class="logo-placeholder">FINANCE</span>
+          <span class="logo-placeholder">Banking</span>
+          <span class="logo-placeholder">Healthcare</span>
+          <span class="logo-placeholder">Telecom</span>
+          <span class="logo-placeholder">Government</span>
+          <span class="logo-placeholder">Finance</span>
         </div>
       </div>
     </section>
@@ -88,8 +96,10 @@
     <!-- About -->
     <section class="next-section" id="about">
       <div class="section-inner reveal">
-        <p class="section-label">01 / ABOUT ZSECURA</p>
-        <h2 class="slide-up-reveal kinetic-text">Security built on<br><em>practical experience.</em></h2>
+        <div class="section-header">
+          <p class="section-label">01 / About ZSecura</p>
+          <h2 class="slide-up-reveal kinetic-text">Security built on <em>practical experience</em></h2>
+        </div>
         <div class="mission-layout">
           <p class="section-copy reveal-text">We are a professional consulting and compliance services firm based in Sri Lanka. We help organisations reduce cybersecurity risks and protect their digital assets — all while keeping solutions practical and cost-effective. No jargon. No fear-mongering. Just results you can measure.</p>
           <div class="signal-list" aria-label="ZSecura principles">
@@ -104,10 +114,10 @@
     <!-- Services -->
     <section class="dark-section" id="services">
       <div class="section-inner reveal">
-        <div class="section-heading">
+        <div class="section-header">
           <div>
-            <p class="section-label">02 / SERVICES</p>
-            <h2 class="slide-up-reveal kinetic-text">Consulting that<br><em>delivers value.</em></h2>
+            <p class="section-label">02 / Services</p>
+            <h2 class="slide-up-reveal kinetic-text">Consulting that <em>delivers value</em></h2>
           </div>
           <p class="heading-note reveal-text">From compliance to incident response, every service is designed to reduce uncertainty and build resilience — without unnecessary complexity.</p>
         </div>
@@ -122,7 +132,7 @@
               <span>01</span>
               <h3>Compliance & Governance</h3>
               <p>ISO 27001, PCI DSS, and local regulatory compliance. We guide you through certification — not just paperwork, but real security improvements.</p>
-              <a href="services.html">Learn more <span>↗</span></a>
+              <a href="services/">Learn more <span>↗</span></a>
             </div>
           </article>
           <article class="service-card glass-card">
@@ -135,7 +145,7 @@
               <span>02</span>
               <h3>Risk Assessment & Audit</h3>
               <p>Independent security assessments that identify real vulnerabilities. We prioritise by business impact, not just CVSS scores.</p>
-              <a href="services.html">Learn more <span>↗</span></a>
+              <a href="services/">Learn more <span>↗</span></a>
             </div>
           </article>
           <article class="service-card glass-card">
@@ -148,7 +158,7 @@
               <span>03</span>
               <h3>Security Operations</h3>
               <p>Incident response, security monitoring, and ongoing advisory. We act as your extended security team — available when you need us.</p>
-              <a href="services.html">Learn more <span>↗</span></a>
+              <a href="services/">Learn more <span>↗</span></a>
             </div>
           </article>
         </div>
@@ -158,11 +168,11 @@
     <!-- Industries -->
     <section class="industries-section" id="industries">
       <div class="section-inner reveal">
-        <p class="section-label">03 / INDUSTRIES</p>
-        <div class="industry-heading">
-          <h2 class="slide-up-reveal kinetic-text">Trusted across<br><em>Sri Lanka's key sectors.</em></h2>
-          <p class="reveal-text">We work with organisations where security is not optional — from banks to hospitals to government agencies.</p>
+        <div class="section-header">
+          <p class="section-label">03 / Industries</p>
+          <h2 class="slide-up-reveal kinetic-text">Trusted across <em>Sri Lanka's key sectors</em></h2>
         </div>
+        <p class="section-intro reveal-text">We work with organisations where security is not optional — from banks to hospitals to government agencies.</p>
         <div class="industry-grid">
           <div><span>01</span><strong>Banking & Finance</strong><small>Payment security, regulatory compliance, fraud prevention</small></div>
           <div><span>02</span><strong>Healthcare</strong><small>Patient data protection, EMR security, HIPAA alignment</small></div>
@@ -175,15 +185,17 @@
     <!-- Contact CTA -->
     <section class="contact-section" id="contact">
       <div class="section-inner contact-inner reveal">
-        <p class="section-label">04 / GET IN TOUCH</p>
-        <h2 class="slide-up-reveal kinetic-text">Let's discuss your<br><em>security posture.</em></h2>
+        <div class="section-header">
+          <p class="section-label">04 / Get in Touch</p>
+          <h2 class="slide-up-reveal kinetic-text">Let's discuss your <em>security posture</em></h2>
+        </div>
         <p class="contact-copy reveal-text">No obligation. No sales pitch. Just a conversation about where you are today and what practical steps can reduce your risk tomorrow.</p>
         <a class="button button-primary" href="contact.html">Contact Us <span>↗</span></a>
-        <p style="margin-top: 20px; color: #4a4f5a; font-size: 13px;">Or call us: <a href="tel:+94772276066" style="color: var(--red);">+94 77 227 6066</a></p>
+        <p class="contact-phone">Or call us: <a href="tel:+94772276066">+94 77 227 6066</a></p>
       </div>
     </section>
 
-    <footer><span>© 2026 ZSECURA</span><span>INFORMATION SECURITY CONSULTANT · SRI LANKA</span></footer>
+    <footer><span>© <span id="year">2026</span> ZSECURA</span><span>Information Security Consultant · Sri Lanka</span></footer>
   </main>
   <script src="script.js"></script>
 </body>
