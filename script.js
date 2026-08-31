@@ -68,7 +68,7 @@ const initScrollReveals = () => {
   slideElements.forEach((el) => slideObserver.observe(el));
 };
 
-/* Controlled card carousels: buttons/dots drive the state; touch remains gesture-friendly. */
+/* One controlled carousel implementation shared by Services and Industries. */
 const initCarousels = () => {
   document.querySelectorAll('[data-card-carousel]').forEach((carousel) => {
     const viewport = carousel.querySelector('.card-carousel-viewport');
@@ -81,7 +81,7 @@ const initCarousels = () => {
 
     let activeIndex = 0;
     let visibleCount = 1;
-    let maxIndex = Math.max(0, cards.length - visibleCount);
+    let maxIndex = 0;
     let dragging = false;
     let pointerStartX = 0;
     let pointerStartY = 0;
@@ -94,12 +94,10 @@ const initCarousels = () => {
       return 1;
     };
 
-    const syncLayout = () => {
-      visibleCount = Math.min(getVisibleCount(), cards.length);
-      maxIndex = Math.max(0, cards.length - visibleCount);
-      activeIndex = Math.min(activeIndex, maxIndex);
-      carousel.style.setProperty('--carousel-index', activeIndex);
-      updateControls();
+    const getCardLabel = (index) => {
+      const heading = cards[index]?.querySelector('h2')?.textContent?.trim();
+      if (heading) return heading;
+      return `${carousel.dataset.cardCarousel === 'industries' ? 'Industry' : 'Service'} ${index + 1}`;
     };
 
     const updateControls = () => {
@@ -110,6 +108,28 @@ const initCarousels = () => {
         const current = index === activeIndex;
         dot.setAttribute('aria-current', String(current));
       });
+    };
+
+    const rebuildDots = () => {
+      dots.replaceChildren();
+      const dotCount = maxIndex + 1;
+      for (let index = 0; index < dotCount; index += 1) {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'card-carousel-dot';
+        dot.setAttribute('aria-label', `Go to ${getCardLabel(index)}`);
+        dot.setAttribute('aria-current', String(index === activeIndex));
+        dot.addEventListener('click', () => goTo(index));
+        dots.appendChild(dot);
+      }
+    };
+
+    const syncLayout = () => {
+      visibleCount = Math.min(getVisibleCount(), cards.length);
+      maxIndex = Math.max(0, cards.length - visibleCount);
+      activeIndex = Math.min(activeIndex, maxIndex);
+      rebuildDots();
+      updateControls();
     };
 
     const animateActiveCard = () => {
@@ -126,19 +146,6 @@ const initCarousels = () => {
       updateControls();
       animateActiveCard();
     };
-
-    cards.forEach((card, index) => {
-      const dot = document.createElement('button');
-      dot.type = 'button';
-      dot.className = 'card-carousel-dot';
-      dot.setAttribute('aria-label', `Go to ${carousel.dataset.cardCarousel === 'industries' ? 'industry' : 'service'} ${index + 1}`);
-      dot.setAttribute('aria-current', String(index === 0));
-      dot.addEventListener('click', () => goTo(Math.min(index, maxIndex)));
-      dots.appendChild(dot);
-    });
-
-    prev?.addEventListener('click', () => goTo(activeIndex - 1));
-    next?.addEventListener('click', () => goTo(activeIndex + 1));
 
     const finishPointer = (event) => {
       if (!dragging) return;
