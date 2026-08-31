@@ -87,20 +87,126 @@ const initScrollReveals = () => {
   slideElements.forEach((el) => slideObserver.observe(el));
 };
 
-/* ===== CAPABILITY CAROUSEL ===== */
+/* ===== DOT-CONTROLLED CARD CAROUSELS ===== */
 const initCarousels = () => {
-  document.querySelectorAll('[data-carousel]').forEach((carousel) => {
-    const track = carousel.querySelector('.capability-track');
-    if (!track) return;
-    const prev = carousel.querySelector('[data-carousel-prev]');
-    const next = carousel.querySelector('[data-carousel-next]');
-    const scrollByCard = (direction) => {
-      const card = track.querySelector('.capability-card');
-      const distance = card ? card.getBoundingClientRect().width + 24 : track.clientWidth * 0.8;
-      track.scrollBy({ left: direction * distance, behavior: reduceMotion ? 'auto' : 'smooth' });
+  document.querySelectorAll('[data-card-carousel]').forEach((carousel) => {
+    const viewport = carousel.querySelector('.card-carousel-viewport');
+    const track = carousel.querySelector('.card-carousel-track');
+    const cards = track ? Array.from(track.querySelectorAll('.premium-card')) : [];
+    const dots = carousel.querySelector('[data-carousel-dots]');
+    if (!viewport || !track || !dots || !cards.length) return;
+
+    let activeIndex = 0;
+    let isPointerDragging = false;
+    let dragStartX = 0;
+    let dragStartScroll = 0;
+    let dragMoved = false;
+
+    const getTargetLeft = (index) => {
+      const card = cards[index];
+      if (!card) return 0;
+      return Math.max(0, card.offsetLeft - (viewport.clientWidth - card.offsetWidth) / 2);
     };
-    prev?.addEventListener('click', () => scrollByCard(-1));
-    next?.addEventListener('click', () => scrollByCard(1));
+
+    const setActive = (index, scroll = true) => {
+      activeIndex = Math.max(0, Math.min(index, cards.length - 1));
+      dots.querySelectorAll('.card-carousel-dot').forEach((dot, dotIndex) => {
+        dot.setAttribute('aria-current', String(dotIndex === activeIndex));
+      });
+      if (scroll) {
+        viewport.scrollTo({
+          left: getTargetLeft(activeIndex),
+          behavior: reduceMotion ? 'auto' : 'smooth'
+        });
+      }
+    };
+
+    cards.forEach((card, index) => {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'card-carousel-dot';
+      dot.setAttribute('aria-label', `Go to ${carousel.dataset.cardCarousel === 'industries' ? 'industry' : 'service'} ${index + 1}`);
+      dot.setAttribute('aria-current', String(index === 0));
+      dot.addEventListener('click', () => setActive(index));
+      dots.appendChild(dot);
+    });
+
+    const updateFromScroll = () => {
+      if (isPointerDragging) return;
+      const center = viewport.scrollLeft + viewport.clientWidth / 2;
+      let nearest = 0;
+      let distance = Infinity;
+      cards.forEach((card, index) => {
+        const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+        const nextDistance = Math.abs(cardCenter - center);
+        if (nextDistance < distance) {
+          distance = nextDistance;
+          nearest = index;
+        }
+      });
+      if (nearest !== activeIndex) setActive(nearest, false);
+    };
+
+    viewport.addEventListener('scroll', updateFromScroll, { passive: true });
+
+    viewport.addEventListener('pointerdown', (event) => {
+      if (event.pointerType === 'mouse' && event.button !== 0) return;
+      isPointerDragging = true;
+      dragMoved = false;
+      dragStartX = event.clientX;
+      dragStartScroll = viewport.scrollLeft;
+      viewport.classList.add('is-dragging');
+      viewport.setPointerCapture?.(event.pointerId);
+    });
+
+    viewport.addEventListener('pointermove', (event) => {
+      if (!isPointerDragging) return;
+      const delta = event.clientX - dragStartX;
+      if (Math.abs(delta) > 6) dragMoved = true;
+      viewport.scrollLeft = dragStartScroll - delta;
+    });
+
+    const endPointerDrag = (event) => {
+      if (!isPointerDragging) return;
+      isPointerDragging = false;
+      viewport.classList.remove('is-dragging');
+      viewport.releasePointerCapture?.(event.pointerId);
+      if (dragMoved) {
+        updateFromScroll();
+        setActive(activeIndex);
+      }
+    };
+
+    viewport.addEventListener('pointerup', endPointerDrag);
+    viewport.addEventListener('pointercancel', endPointerDrag);
+
+    viewport.addEventListener('click', (event) => {
+      if (dragMoved) {
+        event.preventDefault();
+        event.stopPropagation();
+        dragMoved = false;
+      }
+    }, true);
+
+    viewport.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+        event.preventDefault();
+        setActive(activeIndex + 1);
+      } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        setActive(activeIndex - 1);
+      } else if (event.key === 'Home') {
+        event.preventDefault();
+        setActive(0);
+      } else if (event.key === 'End') {
+        event.preventDefault();
+        setActive(cards.length - 1);
+      }
+    });
+
+    const resizeObserver = 'ResizeObserver' in window ? new ResizeObserver(() => setActive(activeIndex, false)) : null;
+    resizeObserver?.observe(viewport);
+    setActive(0, false);
   });
 };
 
