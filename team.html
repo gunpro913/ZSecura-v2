@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
-  
+  <link rel="stylesheet" href="team-card.css" />
 </head>
 <body>
   <header class="nav-wrap">
@@ -25,10 +25,31 @@
       <div class="section-inner reveal">
         <div class="section-header"><p class="section-label">Our Team</p><h1 class="slide-up-reveal">The people behind <em>ZSecura.</em></h1></div>
         <p class="section-copy reveal-text" style="margin-bottom:var(--space-8);">The public team records below are limited to verified names and roles. No unverified biographies, qualifications, certifications, or experience claims are presented.</p>
-        <div class="team-grid">
-          <div class="team-card"><div class="team-avatar">FA</div><h2>Fawzan Ahamed</h2><p class="role">Founder / Director</p></div>
-          <div class="team-card"><div class="team-avatar">HA</div><h2>Hasain Ahmed</h2><p class="role">CEO / Director</p></div>
-          <div class="team-card"><div class="team-avatar">RZ</div><h2>Rahiq Zuhar</h2><p class="role">Lead Consultant GRC</p></div>
+        <div class="team-grid team-cards-v2" aria-label="ZSecura team members">
+          <article class="team-card-v2">
+            <div class="team-card-v2__image" role="img" aria-label="Profile image placeholder for Fawzan Ahamed"></div>
+            <div class="team-card-v2__body">
+              <h2>Fawzan Ahamed</h2>
+              <p class="team-card-v2__role">Founder / Director</p>
+              <p class="team-card-v2__description" aria-label="No verified biography is currently published."></p>
+            </div>
+          </article>
+          <article class="team-card-v2">
+            <div class="team-card-v2__image" role="img" aria-label="Profile image placeholder for Hasain Ahmed"></div>
+            <div class="team-card-v2__body">
+              <h2>Hasain Ahmed</h2>
+              <p class="team-card-v2__role">CEO / Director</p>
+              <p class="team-card-v2__description" aria-label="No verified biography is currently published."></p>
+            </div>
+          </article>
+          <article class="team-card-v2">
+            <div class="team-card-v2__image" role="img" aria-label="Profile image placeholder for Rahiq Zuhar"></div>
+            <div class="team-card-v2__body">
+              <h2>Rahiq Zuhar</h2>
+              <p class="team-card-v2__role">Lead Consultant GRC</p>
+              <p class="team-card-v2__description" aria-label="No verified biography is currently published."></p>
+            </div>
+          </article>
         </div>
         <div style="margin-top:var(--space-10);text-align:left;"><p class="section-label">Need to speak with us?</p><a class="button button-primary" style="margin-top:var(--space-4);" href="contact.html">Contact ZSecura <span>↗</span></a></div>
       </div>
