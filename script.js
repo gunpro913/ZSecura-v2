@@ -12,10 +12,7 @@ const initPreloader = () => {
 };
 
 /* ===== NAV FIX ===== */
-if (navWrap && navWrap.parentElement !== document.body) {
-  document.body.prepend(navWrap);
-}
-
+if (navWrap && navWrap.parentElement !== document.body) document.body.prepend(navWrap);
 document.documentElement.classList.add('js-ready');
 
 const closeMenu = () => {
@@ -34,22 +31,15 @@ if (menuButton && navLinks) {
     navLinks.classList.toggle('mobile-open', !open);
     document.body.classList.toggle('nav-open', !open);
   });
-  document.querySelectorAll('.nav-links a').forEach((link) => {
-    link.addEventListener('click', closeMenu);
-  });
+  document.querySelectorAll('.nav-links a').forEach((link) => link.addEventListener('click', closeMenu));
   document.addEventListener('pointerdown', (event) => {
     if (!nav?.contains(event.target) && navLinks.classList.contains('mobile-open')) closeMenu();
   });
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') closeMenu();
-  });
+  document.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeMenu(); });
 }
 
 /* ===== NAV SCROLL ===== */
-const updateNav = () => {
-  if (!nav) return;
-  nav.classList.toggle('is-scrolled', window.scrollY > 18);
-};
+const updateNav = () => nav?.classList.toggle('is-scrolled', window.scrollY > 18);
 window.addEventListener('scroll', updateNav, { passive: true });
 updateNav();
 
@@ -67,7 +57,7 @@ if (!reduceMotion) {
   document.querySelectorAll('.reveal').forEach((element) => element.classList.add('is-visible'));
 }
 
-/* ===== SCROLL REVEALS (headings / copy) ===== */
+/* ===== SCROLL REVEALS ===== */
 const initScrollReveals = () => {
   const slideElements = document.querySelectorAll('.slide-up-reveal, .reveal-text');
   if (!slideElements.length || !('IntersectionObserver' in window)) return;
@@ -77,42 +67,105 @@ const initScrollReveals = () => {
   }
   const slideObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        const delay = Array.from(slideElements).indexOf(entry.target) * 70;
-        setTimeout(() => { entry.target.classList.add('is-visible'); }, delay);
-        slideObserver.unobserve(entry.target);
-      }
+      if (!entry.isIntersecting) return;
+      const delay = Array.from(slideElements).indexOf(entry.target) * 70;
+      setTimeout(() => entry.target.classList.add('is-visible'), delay);
+      slideObserver.unobserve(entry.target);
     });
   }, { threshold: 0.2, rootMargin: '0px 0px -50px 0px' });
   slideElements.forEach((el) => slideObserver.observe(el));
 };
 
-/* ===== CAPABILITY CAROUSEL ===== */
+/* ===== LIGHTWEIGHT CAROUSELS ===== */
 const initCarousels = () => {
   document.querySelectorAll('[data-carousel]').forEach((carousel) => {
-    const track = carousel.querySelector('.capability-track');
+    const track = carousel.querySelector('.capability-track, .service-carousel-track, .industry-track');
     if (!track) return;
-    const prev = carousel.querySelector('[data-carousel-prev]');
-    const next = carousel.querySelector('[data-carousel-next]');
-    const scrollByCard = (direction) => {
-      const card = track.querySelector('.capability-card');
-      const distance = card ? card.getBoundingClientRect().width + 24 : track.clientWidth * 0.8;
-      track.scrollBy({ left: direction * distance, behavior: reduceMotion ? 'auto' : 'smooth' });
+    const cards = Array.from(track.children);
+    const dots = carousel.querySelector('.carousel-dots');
+    if (!cards.length) return;
+
+    const scrollToCard = (index) => {
+      const card = cards[Math.max(0, Math.min(index, cards.length - 1))];
+      track.scrollTo({ left: card.offsetLeft - track.offsetLeft, behavior: reduceMotion ? 'auto' : 'smooth' });
     };
-    prev?.addEventListener('click', () => scrollByCard(-1));
-    next?.addEventListener('click', () => scrollByCard(1));
+
+    if (dots) {
+      dots.innerHTML = '';
+      cards.forEach((card, index) => {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'carousel-dot';
+        dot.setAttribute('aria-label', `Go to card ${index + 1}`);
+        dot.addEventListener('click', () => scrollToCard(index));
+        dots.appendChild(dot);
+      });
+    }
+
+    const updateActive = () => {
+      if (!dots) return;
+      const left = track.scrollLeft;
+      let active = 0;
+      cards.forEach((card, index) => {
+        if (Math.abs(card.offsetLeft - track.offsetLeft - left) < Math.abs(cards[active].offsetLeft - track.offsetLeft - left)) active = index;
+      });
+      dots.querySelectorAll('.carousel-dot').forEach((dot, index) => {
+        dot.classList.toggle('is-active', index === active);
+        dot.setAttribute('aria-current', index === active ? 'true' : 'false');
+      });
+    };
+
+    track.addEventListener('scroll', updateActive, { passive: true });
+    updateActive();
+
+    let pointerStartX = 0;
+    let pointerStartScroll = 0;
+    let dragging = false;
+    let horizontalIntent = false;
+
+    track.addEventListener('pointerdown', (event) => {
+      if (event.pointerType !== 'mouse' || event.button !== 0) return;
+      pointerStartX = event.clientX;
+      pointerStartScroll = track.scrollLeft;
+      dragging = true;
+      horizontalIntent = false;
+    });
+    track.addEventListener('pointermove', (event) => {
+      if (!dragging) return;
+      const dx = event.clientX - pointerStartX;
+      if (!horizontalIntent && Math.abs(dx) < 8) return;
+      if (!horizontalIntent) horizontalIntent = true;
+      event.preventDefault();
+      track.classList.add('is-dragging');
+      track.scrollLeft = pointerStartScroll - dx;
+    });
+    const endDrag = () => {
+      if (!dragging) return;
+      dragging = false;
+      track.classList.remove('is-dragging');
+      if (horizontalIntent) {
+        const nearest = cards.reduce((best, card, index) => {
+          const distance = Math.abs(card.offsetLeft - track.offsetLeft - track.scrollLeft);
+          const bestDistance = Math.abs(cards[best].offsetLeft - track.offsetLeft - track.scrollLeft);
+          return distance < bestDistance ? index : best;
+        }, 0);
+        scrollToCard(nearest);
+      }
+      horizontalIntent = false;
+    };
+    track.addEventListener('pointerup', endDrag);
+    track.addEventListener('pointercancel', endDrag);
+    track.addEventListener('pointerleave', () => { if (dragging) endDrag(); });
   });
 };
 
 /* ===== FORM VALIDATION ===== */
 const initForms = () => {
-  const forms = document.querySelectorAll('form[data-validate]');
-  forms.forEach(form => {
+  document.querySelectorAll('form[data-validate]').forEach((form) => {
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       let valid = true;
-      const required = form.querySelectorAll('[required]');
-      required.forEach(field => {
+      form.querySelectorAll('[required]').forEach((field) => {
         if (!field.value.trim()) {
           valid = false;
           field.style.borderColor = 'var(--accent)';
@@ -134,13 +187,11 @@ const initForms = () => {
   });
 };
 
-/* ===== AUTO-UPDATE COPYRIGHT YEAR ===== */
 const initYear = () => {
   const yearEl = document.getElementById('year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 };
 
-/* ===== INITIALIZE ALL ===== */
 const initAll = () => {
   initPreloader();
   initScrollReveals();
@@ -149,8 +200,5 @@ const initAll = () => {
   initYear();
 };
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initAll);
-} else {
-  initAll();
-}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initAll);
+else initAll();
