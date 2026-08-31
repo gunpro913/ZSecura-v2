@@ -3,7 +3,7 @@
   if (!document.querySelector('link[data-zsecura-p2]')) {
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = 'p2-polish.css';
+    link.href = new URL('p2-polish.css', document.currentScript.src).href;
     link.dataset.zsecuraP2 = 'true';
     document.head.appendChild(link);
   }
