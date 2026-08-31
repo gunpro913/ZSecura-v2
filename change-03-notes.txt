@@ -1,1 +1,0 @@
-Change 03: Services + Industries carousel polish, verified industry descriptions, and the three specified Team LinkedIn profiles. This file is temporary implementation scope documentation.
