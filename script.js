@@ -68,30 +68,63 @@ const initScrollReveals = () => {
   slideElements.forEach((el) => slideObserver.observe(el));
 };
 
-/* Native card carousels: touch remains native for momentum; mouse supports deliberate drag. */
+/* Controlled card carousels: buttons/dots drive the state; touch remains gesture-friendly. */
 const initCarousels = () => {
   document.querySelectorAll('[data-card-carousel]').forEach((carousel) => {
     const viewport = carousel.querySelector('.card-carousel-viewport');
     const track = carousel.querySelector('.card-carousel-track');
     const cards = track ? Array.from(track.querySelectorAll('.premium-card')) : [];
     const dots = carousel.querySelector('[data-carousel-dots]');
+    const prev = carousel.querySelector('[data-carousel-prev]');
+    const next = carousel.querySelector('[data-carousel-next]');
     if (!viewport || !track || !dots || !cards.length) return;
 
     let activeIndex = 0;
-    let isPointerDragging = false;
-    let dragStartX = 0;
-    let dragStartScroll = 0;
-    let dragMoved = false;
+    let visibleCount = 1;
+    let maxIndex = Math.max(0, cards.length - visibleCount);
+    let dragging = false;
+    let pointerStartX = 0;
+    let pointerStartY = 0;
+    let dragOffset = 0;
+    let dragActive = false;
 
-    const getTargetLeft = (index) => {
-      const card = cards[index];
-      if (!card) return 0;
-      return Math.max(0, card.offsetLeft - (viewport.clientWidth - card.offsetWidth) / 2);
+    const getVisibleCount = () => {
+      if (window.innerWidth >= 1200) return 3;
+      if (window.innerWidth >= 768) return 2;
+      return 1;
     };
-    const setActive = (index, scroll = true) => {
-      activeIndex = Math.max(0, Math.min(index, cards.length - 1));
-      dots.querySelectorAll('.card-carousel-dot').forEach((dot, dotIndex) => dot.setAttribute('aria-current', String(dotIndex === activeIndex)));
-      if (scroll) viewport.scrollTo({ left: getTargetLeft(activeIndex), behavior: reduceMotion ? 'auto' : 'smooth' });
+
+    const syncLayout = () => {
+      visibleCount = Math.min(getVisibleCount(), cards.length);
+      maxIndex = Math.max(0, cards.length - visibleCount);
+      activeIndex = Math.min(activeIndex, maxIndex);
+      carousel.style.setProperty('--carousel-index', activeIndex);
+      updateControls();
+    };
+
+    const updateControls = () => {
+      carousel.style.setProperty('--carousel-index', activeIndex);
+      prev?.toggleAttribute('disabled', activeIndex === 0);
+      next?.toggleAttribute('disabled', activeIndex === maxIndex);
+      dots.querySelectorAll('.card-carousel-dot').forEach((dot, index) => {
+        const current = index === activeIndex;
+        dot.setAttribute('aria-current', String(current));
+      });
+    };
+
+    const animateActiveCard = () => {
+      if (reduceMotion) return;
+      cards.forEach((card) => card.classList.remove('is-active'));
+      void cards[activeIndex]?.offsetWidth;
+      cards[activeIndex]?.classList.add('is-active');
+    };
+
+    const goTo = (index) => {
+      activeIndex = Math.max(0, Math.min(index, maxIndex));
+      dragOffset = 0;
+      carousel.style.setProperty('--carousel-drag', '0px');
+      updateControls();
+      animateActiveCard();
     };
 
     cards.forEach((card, index) => {
@@ -100,60 +133,85 @@ const initCarousels = () => {
       dot.className = 'card-carousel-dot';
       dot.setAttribute('aria-label', `Go to ${carousel.dataset.cardCarousel === 'industries' ? 'industry' : 'service'} ${index + 1}`);
       dot.setAttribute('aria-current', String(index === 0));
-      dot.addEventListener('click', () => setActive(index));
+      dot.addEventListener('click', () => goTo(Math.min(index, maxIndex)));
       dots.appendChild(dot);
     });
 
-    const updateFromScroll = () => {
-      if (isPointerDragging) return;
-      const center = viewport.scrollLeft + viewport.clientWidth / 2;
-      let nearest = 0;
-      let distance = Infinity;
-      cards.forEach((card, index) => {
-        const cardCenter = card.offsetLeft + card.offsetWidth / 2;
-        const nextDistance = Math.abs(cardCenter - center);
-        if (nextDistance < distance) { distance = nextDistance; nearest = index; }
-      });
-      if (nearest !== activeIndex) setActive(nearest, false);
+    prev?.addEventListener('click', () => goTo(activeIndex - 1));
+    next?.addEventListener('click', () => goTo(activeIndex + 1));
+
+    const finishPointer = (event) => {
+      if (!dragging) return;
+      dragging = false;
+      viewport.classList.remove('is-dragging');
+      viewport.releasePointerCapture?.(event.pointerId);
+      if (dragActive) {
+        if (dragOffset < -48) goTo(activeIndex + 1);
+        else if (dragOffset > 48) goTo(activeIndex - 1);
+        else goTo(activeIndex);
+      }
+      dragOffset = 0;
+      dragActive = false;
+      carousel.style.setProperty('--carousel-drag', '0px');
     };
-    viewport.addEventListener('scroll', updateFromScroll, { passive: true });
 
     viewport.addEventListener('pointerdown', (event) => {
-      if (event.pointerType !== 'mouse' || event.button !== 0) return;
-      isPointerDragging = true;
-      dragMoved = false;
-      dragStartX = event.clientX;
-      dragStartScroll = viewport.scrollLeft;
+      if (event.pointerType === 'mouse' && event.button !== 0) return;
+      dragging = true;
+      dragActive = false;
+      pointerStartX = event.clientX;
+      pointerStartY = event.clientY;
+      dragOffset = 0;
       viewport.classList.add('is-dragging');
       viewport.setPointerCapture?.(event.pointerId);
     });
+
     viewport.addEventListener('pointermove', (event) => {
-      if (!isPointerDragging) return;
-      const delta = event.clientX - dragStartX;
-      if (Math.abs(delta) > 6) dragMoved = true;
-      viewport.scrollLeft = dragStartScroll - delta;
+      if (!dragging) return;
+      const dx = event.clientX - pointerStartX;
+      const dy = event.clientY - pointerStartY;
+      if (!dragActive) {
+        if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 8) {
+          dragging = false;
+          viewport.classList.remove('is-dragging');
+          viewport.releasePointerCapture?.(event.pointerId);
+          return;
+        }
+        if (Math.abs(dx) > 8) dragActive = true;
+      }
+      if (!dragActive) return;
+      event.preventDefault();
+      dragOffset = dx;
+      carousel.style.setProperty('--carousel-drag', `${dragOffset}px`);
     });
-    const endPointerDrag = (event) => {
-      if (!isPointerDragging) return;
-      isPointerDragging = false;
-      viewport.classList.remove('is-dragging');
-      viewport.releasePointerCapture?.(event.pointerId);
-      if (dragMoved) { updateFromScroll(); setActive(activeIndex); }
-    };
-    viewport.addEventListener('pointerup', endPointerDrag);
-    viewport.addEventListener('pointercancel', endPointerDrag);
+
+    viewport.addEventListener('pointerup', finishPointer);
+    viewport.addEventListener('pointercancel', finishPointer);
     viewport.addEventListener('click', (event) => {
-      if (dragMoved) { event.preventDefault(); event.stopPropagation(); dragMoved = false; }
+      if (dragActive) { event.preventDefault(); event.stopPropagation(); }
     }, true);
+
+    viewport.addEventListener('wheel', (event) => {
+      if (Math.abs(event.deltaX) <= Math.abs(event.deltaY) || Math.abs(event.deltaX) < 12) return;
+      event.preventDefault();
+      goTo(activeIndex + (event.deltaX > 0 ? 1 : -1));
+    }, { passive: false });
+
     viewport.addEventListener('keydown', (event) => {
-      if (event.key === 'ArrowRight' || event.key === 'ArrowDown') { event.preventDefault(); setActive(activeIndex + 1); }
-      else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') { event.preventDefault(); setActive(activeIndex - 1); }
-      else if (event.key === 'Home') { event.preventDefault(); setActive(0); }
-      else if (event.key === 'End') { event.preventDefault(); setActive(cards.length - 1); }
+      if (event.key === 'ArrowRight' || event.key === 'ArrowDown') { event.preventDefault(); goTo(activeIndex + 1); }
+      else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') { event.preventDefault(); goTo(activeIndex - 1); }
+      else if (event.key === 'Home') { event.preventDefault(); goTo(0); }
+      else if (event.key === 'End') { event.preventDefault(); goTo(maxIndex); }
     });
-    const resizeObserver = 'ResizeObserver' in window ? new ResizeObserver(() => setActive(activeIndex, false)) : null;
-    resizeObserver?.observe(viewport);
-    setActive(0, false);
+
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(syncLayout, 100);
+    }, { passive: true });
+
+    syncLayout();
+    animateActiveCard();
   });
 };
 
