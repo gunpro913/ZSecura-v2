@@ -1,0 +1,93 @@
+/* Change 03: lightweight carousel interaction + minimal Team LinkedIn presentation. */
+[data-carousel] { min-width: 0; }
+[data-carousel] .capability-track,
+[data-carousel] .service-carousel-track,
+[data-carousel] .industry-track {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 2px 2px 18px;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 2px;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  touch-action: pan-y;
+  cursor: grab;
+}
+[data-carousel] .capability-track::-webkit-scrollbar,
+[data-carousel] .service-carousel-track::-webkit-scrollbar,
+[data-carousel] .industry-track::-webkit-scrollbar { display: none; }
+[data-carousel] .capability-track.is-dragging,
+[data-carousel] .service-carousel-track.is-dragging,
+[data-carousel] .industry-track.is-dragging { cursor: grabbing; scroll-snap-type: none; user-select: none; }
+[data-carousel] .capability-card,
+[data-carousel] .service-card,
+[data-carousel] .industry-card {
+  flex: 0 0 min(78vw, 360px);
+  scroll-snap-align: start;
+}
+[data-carousel] .carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 18px;
+}
+[data-carousel] .carousel-dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: rgba(245,240,232,.12);
+  cursor: pointer;
+  transition: transform .2s ease, background .2s ease, border-color .2s ease;
+}
+[data-carousel] .carousel-dot.is-active {
+  transform: scale(1.25);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+[data-carousel] .carousel-dot:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+
+.industry-carousel { margin-top: 32px; }
+.industry-track .industry-card {
+  min-height: 250px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: 0 18px 48px rgba(0,0,0,.22), inset 0 1px rgba(255,255,255,.04);
+}
+.industry-card__number { font-family: var(--font-sans); font-size: 11px; color: var(--accent); margin-bottom: 20px; }
+.industry-card h2 { font-size: clamp(24px,3vw,34px); margin: 0; }
+.industry-card p { margin-top: 14px; color: var(--text-muted); font-size: 15px; line-height: 1.65; }
+
+.team-card-v2__linkedin svg { width: 17px; height: 17px; flex: 0 0 auto; }
+
+@media (min-width: 1100px) {
+  [data-carousel] .capability-track,
+  [data-carousel] .service-carousel-track,
+  [data-carousel] .industry-track { cursor: default; }
+  [data-carousel] .capability-card,
+  [data-carousel] .service-card,
+  [data-carousel] .industry-card { flex-basis: 360px; }
+}
+@media (max-width: 700px) {
+  [data-carousel] .capability-track,
+  [data-carousel] .service-carousel-track,
+  [data-carousel] .industry-track { gap: 16px; }
+  [data-carousel] .capability-card,
+  [data-carousel] .service-card,
+  [data-carousel] .industry-card { flex-basis: min(86vw, 340px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-carousel] .carousel-dot { transition: none; }
+  [data-carousel] .capability-track,
+  [data-carousel] .service-carousel-track,
+  [data-carousel] .industry-track { scroll-behavior: auto; }
+}
