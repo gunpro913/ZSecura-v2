@@ -1,1 +1,0 @@
-Sticky navigation remains viewport-fixed after overflow containment correction.

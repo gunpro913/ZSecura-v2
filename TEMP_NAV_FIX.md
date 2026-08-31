@@ -1,1 +1,0 @@
-Sticky navigation fix is in styles.css.

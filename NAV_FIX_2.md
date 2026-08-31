@@ -1,1 +1,0 @@
-Second sticky navigation fix: remove the overflow:hidden containing block from .site-shell so position:fixed navigation stays attached to the viewport on mobile and desktop.
