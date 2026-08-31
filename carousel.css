@@ -2,7 +2,7 @@
 .card-carousel { width:100%; max-width:1180px; margin-inline:auto; }
 .card-carousel-viewport { width:100%; overflow:hidden; outline:none; }
 .card-carousel-track { display:flex; gap:24px; transform:translate3d(calc(var(--carousel-index, 0) * -1 * (var(--carousel-card-width, 100%) + 24px) + var(--carousel-drag, 0px)),0,0); transition:transform .42s cubic-bezier(.22,.61,.36,1); will-change:transform; }
-.card-carousel-track.is-dragging { transition:none; }
+.card-carousel-viewport.is-dragging .card-carousel-track { transition:none; }
 .premium-card { flex:0 0 var(--carousel-card-width,100%); min-width:0; overflow:hidden; border:1px solid var(--line); border-radius:var(--radius-lg); background:rgba(20,20,22,.76); box-shadow:0 18px 48px rgba(0,0,0,.34),inset 0 1px rgba(255,255,255,.05); backdrop-filter:blur(18px) saturate(115%); -webkit-backdrop-filter:blur(18px) saturate(115%); }
 .premium-card.is-active { animation:carousel-card-in .42s cubic-bezier(.22,.61,.36,1); }
 .premium-card-image { height:clamp(220px,25vw,330px); background:rgba(245,240,232,.025); border-bottom:1px solid var(--line); }
